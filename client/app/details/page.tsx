@@ -5,21 +5,20 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  GoogleMap,
+  useJsApiLoader,
+  Autocomplete,
+} from "@react-google-maps/api";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Moon, CalendarDays, MapPin } from "lucide-react";
+import { Moon } from "lucide-react";
 
-const states = ["Maharashtra", "Karnataka", "Tamil Nadu", "Uttar Pradesh"];
-const cities = {
-  Maharashtra: ["Mumbai", "Pune", "Nagpur"],
-  Karnataka: ["Bangalore", "Mysore", "Mangalore"],
-  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
-  "Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi"],
-};
+const libraries: ("places")[] = ["places"];
 
 export default function DetailsPage() {
   const router = useRouter();
@@ -28,14 +27,43 @@ export default function DetailsPage() {
     dob: "",
     time: "",
     gender: "",
-    state: "",
-    city: "",
+    location: "",
+    lat: null, // Latitude
+    lng: null, // Longitude
+  });
+  const [autocomplete, setAutocomplete] =
+    useState<google.maps.places.Autocomplete | null>(null);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    libraries,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(formData); // Debugging to check captured data
     router.push("/dashboard");
   };
+
+  const onLoad = (autoC: google.maps.places.Autocomplete) => setAutocomplete(autoC);
+
+  const onPlaceChanged = () => {
+    if (autocomplete) {
+      const place = autocomplete.getPlace();
+      const location = place.formatted_address || place.name;
+      const lat = place.geometry?.location?.lat();
+      const lng = place.geometry?.location?.lng();
+
+      setFormData({
+        ...formData,
+        location,
+        lat: lat || null,
+        lng: lng || null,
+      });
+    }
+  };
+
+  if (!isLoaded) return <div>Loading...</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-950 via-purple-900 to-indigo-950 flex items-center justify-center">
@@ -62,7 +90,7 @@ export default function DetailsPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-violet-200  mb-2 block">Date of Birth</label>
+                <label className="text-violet-200 mb-2 block">Date of Birth</label>
                 <Input
                   type="date"
                   value={formData.dob}
@@ -87,7 +115,7 @@ export default function DetailsPage() {
                   className="border-violet-400 dark:border-violet-500 bg-violet-200/50 dark:bg-violet-900/50 focus:ring-violet-400 checked:bg-violet-500 checked:border-violet-500 hover:scale-110 transition-all duration-500 ease-in-out w-6 h-6 mr-2"
                   type="checkbox"
                 />
-                I dont know the time of birth
+                I don't know the time of birth
               </label>
             </div>
 
@@ -105,39 +133,14 @@ export default function DetailsPage() {
               </SelectContent>
             </Select>
 
-            <Select
-              value={formData.state}
-              onValueChange={(value) => setFormData({ ...formData, state: value, city: "" })}
-            >
-              <SelectTrigger className="bg-violet-950/50 border-violet-700 text-violet-100">
-                <SelectValue placeholder="State" />
-              </SelectTrigger>
-              <SelectContent>
-                {states.map((state) => (
-                  <SelectItem key={state} value={state}>
-                    {state}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {formData.state && (
-              <Select
-                value={formData.city}
-                onValueChange={(value) => setFormData({ ...formData, city: value })}
-              >
-                <SelectTrigger className="bg-violet-950/50 border-violet-700 text-violet-100">
-                  <SelectValue placeholder="City" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cities[formData.state as keyof typeof cities].map((city) => (
-                    <SelectItem key={city} value={city}>
-                      {city}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+            <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+              <Input
+                placeholder="Enter your location"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                className="bg-violet-950/50 border-violet-700 text-violet-100"
+              />
+            </Autocomplete>
           </div>
 
           <Button
