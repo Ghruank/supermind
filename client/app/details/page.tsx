@@ -28,8 +28,10 @@ export default function DetailsPage() {
     time: "",
     gender: "",
     location: "",
-    lat: null, // Latitude
-    lng: null, // Longitude
+    state: "",
+    city: "",
+    lat: null as number | null, // Latitude
+    lon: null as number | null, // Longitude
   });
   const [autocomplete, setAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
@@ -38,11 +40,42 @@ export default function DetailsPage() {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
     libraries,
   });
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData); // Debugging to check captured data
-    router.push("/dashboard");
+    const email = localStorage.getItem("email");
+    const password = localStorage.getItem("password");
+
+    if (!email || !password) {
+      setError("Missing email or password from registration step");
+      return;
+    }
+
+    const response = await fetch("http://127.0.0.1:5000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        date_of_birth: formData.dob || "2000-01-01", // Default date of birth
+        time: formData.time,
+        gender: formData.gender,
+        location: formData.location,
+        lat: formData.lat,
+        lon: formData.lon,
+        email,
+        password,
+      }),
+    });
+
+    if (response.ok) {
+      router.push("/testing");
+    } else {
+      const result = await response.json();
+      setError(result.message || "Failed to save details");
+    }
   };
 
   const onLoad = (autoC: google.maps.places.Autocomplete) => setAutocomplete(autoC);
@@ -52,13 +85,13 @@ export default function DetailsPage() {
       const place = autocomplete.getPlace();
       const location = place.formatted_address || place.name;
       const lat = place.geometry?.location?.lat();
-      const lng = place.geometry?.location?.lng();
+      const lon = place.geometry?.location?.lng();
 
       setFormData({
         ...formData,
-        location,
+        location: location || "",
         lat: lat || null,
-        lng: lng || null,
+        lon: lon || null,
       });
     }
   };
@@ -77,6 +110,8 @@ export default function DetailsPage() {
           </h2>
           <p className="mt-2 text-violet-300">Tell us about yourself</p>
         </div>
+
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">

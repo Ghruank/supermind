@@ -2,12 +2,18 @@ from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
+from flask_cors import CORS
 import uuid
 from dotenv import load_dotenv
 import os
+import logging
 
 app = Flask(__name__)
+CORS(app)
 bcrypt = Bcrypt(app)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 # Load environment variables
 load_dotenv()
@@ -28,9 +34,16 @@ auth_provider = PlainTextAuthProvider(
 )
 cluster = Cluster(
     cloud={'secure_connect_bundle': os.getenv('DATASTAX_SECURE_CONNECT_BUNDLE')},
-    auth_provider=auth_provider
+    auth_provider=auth_provider,
+    protocol_version=4,  # Explicitly set the protocol version
+    connect_timeout=20,  # Increase the connection timeout
+    control_connection_timeout=20  # Increase the control connection timeout
 )
-session = cluster.connect(os.getenv('DATASTAX_KEYSPACE'))
+session = cluster.connect()
+
+# Set keyspace
+keyspace = os.getenv('DATASTAX_KEYSPACE')
+session.set_keyspace(keyspace)
 
 # Create users table and email index if not exists
 session.execute("""
@@ -42,8 +55,9 @@ CREATE TABLE IF NOT EXISTS users (
     date_of_birth DATE,
     time TEXT,
     gender TEXT,
-    state TEXT,
-    city TEXT
+    location TEXT,
+    lat DOUBLE,
+    lon DOUBLE
 )
 """)
 session.execute("""
@@ -54,29 +68,38 @@ CREATE INDEX IF NOT EXISTS ON users (email);
 def register():
     try:
         data = request.json
+        logging.info(f"Received registration data: {data}")
 
         # Validate required fields
-        required_fields = ['name', 'email', 'password', 'date_of_birth', 'time', 'gender', 'state', 'city']
+        required_fields = ['name', 'email', 'password', 'date_of_birth', 'time', 'gender', 'location', 'lat', 'lon']
         if not all(field in data for field in required_fields):
             return jsonify({'error': 'Missing required fields'}), 400
+
+        # Check if user already exists
+        existing_user = session.execute("SELECT * FROM users WHERE email=%s", (data['email'],)).one()
+        logging.info(f"Existing user query result: {existing_user}")
+        if existing_user:
+            return jsonify({'message': 'User already exists, please log in'}), 409
 
         # Hash password and insert user
         hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
         user_id = uuid.uuid4()
         session.execute("""
-        INSERT INTO users (id, name, email, password, date_of_birth, time, gender, state, city)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO users (id, name, email, password, date_of_birth, time, gender, location, lat, lon)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (user_id, data['name'], data['email'], hashed_password, data['date_of_birth'],
-              data['time'], data['gender'], data['state'], data['city']))
+              data['time'], data['gender'], data['location'], data['lat'], data['lon']))
         return jsonify({'message': 'User registered successfully'}), 201
 
     except Exception as e:
-        return jsonify({'error': 'Failed to register user'}), 500
+        logging.error(f"Error during registration: {e}")
+        return jsonify({'error': 'Failed to register user', 'details': str(e)}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
     try:
         data = request.json
+        logging.info(f"Received login data: {data}")
 
         # Validate required fields
         if 'email' not in data or 'password' not in data:
@@ -95,22 +118,25 @@ def login():
                 'date_of_birth': str(user.date_of_birth),
                 'time': user.time,
                 'gender': user.gender,
-                'state': user.state,
-                'city': user.city
+                'location': user.location,
+                'lat': user.lat,
+                'lon': user.lon
             }), 200
         else:
             return jsonify({'message': 'Invalid email or password'}), 401
 
     except Exception as e:
-        return jsonify({'error': 'Failed to log in'}), 500
+        logging.error(f"Error during login: {e}")
+        return jsonify({'error': 'Failed to log in', 'details': str(e)}), 500
 
 @app.route('/test', methods=['POST'])
 def test():
     try:
         data = request.json
+        logging.info(f"Received test data: {data}")
 
         # Validate required fields
-        required_fields = ['name', 'email', 'password', 'date_of_birth', 'time', 'gender', 'state', 'city']
+        required_fields = ['name', 'email', 'password', 'date_of_birth', 'time', 'gender', 'location', 'lat', 'lon']
         if not all(field in data for field in required_fields):
             return jsonify({'error': 'Missing required fields'}), 400
 
@@ -118,14 +144,15 @@ def test():
         hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
         user_id = uuid.uuid4()
         session.execute("""
-        INSERT INTO users (id, name, email, password, date_of_birth, time, gender, state, city)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO users (id, name, email, password, date_of_birth, time, gender, location, lat, lon)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (user_id, data['name'], data['email'], hashed_password, data['date_of_birth'],
-              data['time'], data['gender'], data['state'], data['city']))
+              data['time'], data['gender'], data['location'], data['lat'], data['lon']))
 
         # Fetch the user data from the database
         user = session.execute("SELECT * FROM users WHERE id=%s", (user_id,)).one()
         if user:
+            logging.info(f"Fetched user data: {user}")
             print({
                 'id': str(user.id),
                 'name': user.name,
@@ -133,15 +160,17 @@ def test():
                 'date_of_birth': str(user.date_of_birth),
                 'time': user.time,
                 'gender': user.gender,
-                'state': user.state,
-                'city': user.city
+                'location': user.location,
+                'lat': user.lat,
+                'lon': user.lon
             })
             return jsonify({'message': 'Data saved and fetched successfully'}), 200
         else:
             return jsonify({'error': 'Failed to fetch user data'}), 500
 
     except Exception as e:
-        return jsonify({'error': 'Failed to process test data'}), 500
+        logging.error(f"Error during test: {e}")
+        return jsonify({'error': 'Failed to process test data', 'details': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
