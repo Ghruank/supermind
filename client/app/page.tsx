@@ -28,7 +28,7 @@ export default function Home() {
               Login
             </Button>
             <Button 
-              onClick={() => router.push("/register")}
+              onClick={() => router.push("/login")}
               className="bg-violet-700 hover:bg-violet-600 text-violet-100"
             >
               Get Started
@@ -54,7 +54,7 @@ export default function Home() {
           
           <Button 
             size="lg" 
-            onClick={() => router.push("/register")}
+            onClick={() => router.push("/login")}
             className="mt-8 bg-violet-700 hover:bg-violet-600 text-violet-100 group"
           >
             Begin Your Journey 
