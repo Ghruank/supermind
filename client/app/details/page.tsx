@@ -28,8 +28,10 @@ export default function DetailsPage() {
     time: "",
     gender: "",
     location: "",
-    lat: null, // Latitude
-    lng: null, // Longitude
+    state: "",
+    city: "",
+    lat: null as number | null, // Latitude
+    lon: null as number | null, // Longitude
   });
   const [autocomplete, setAutocomplete] =
     useState<google.maps.places.Autocomplete | null>(null);
@@ -42,6 +44,14 @@ export default function DetailsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const email = localStorage.getItem("email");
+    const password = localStorage.getItem("password");
+
+    if (!email || !password) {
+      setError("Missing email or password from registration step");
+      return;
+    }
+
     const response = await fetch("http://127.0.0.1:5000/register", {
       method: "POST",
       headers: {
@@ -49,13 +59,14 @@ export default function DetailsPage() {
       },
       body: JSON.stringify({
         name: formData.name,
-        date_of_birth: formData.dob,
+        date_of_birth: formData.dob || "2000-01-01", // Default date of birth
         time: formData.time,
         gender: formData.gender,
-        state: formData.state,
-        city: formData.city,
-        email: "john.doe@example.com",
-        password: "password123",
+        location: formData.location,
+        lat: formData.lat,
+        lon: formData.lon,
+        email,
+        password,
       }),
     });
 
@@ -74,13 +85,13 @@ export default function DetailsPage() {
       const place = autocomplete.getPlace();
       const location = place.formatted_address || place.name;
       const lat = place.geometry?.location?.lat();
-      const lng = place.geometry?.location?.lng();
+      const lon = place.geometry?.location?.lng();
 
       setFormData({
         ...formData,
-        location,
+        location: location || "",
         lat: lat || null,
-        lng: lng || null,
+        lon: lon || null,
       });
     }
   };

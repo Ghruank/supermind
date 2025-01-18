@@ -17,30 +17,11 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password === confirmPassword) {
-      const response = await fetch("http://127.0.0.1:5000/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          // Add other required fields here
-          name: "John Doe",
-          date_of_birth: "1990-01-01",
-          time: "12:00",
-          gender: "Male",
-          state: "California",
-          city: "Los Angeles",
-        }),
-      });
-
-      if (response.ok) {
-        router.push("/details");
-      } else {
-        const result = await response.json();
-        setError(result.message || "Failed to register");
-      }
+      localStorage.setItem("email", email);
+      localStorage.setItem("password", password);
+      router.push("/details");
+    } else {
+      setError("Passwords do not match.");
     }
   };
 

@@ -13,20 +13,29 @@ export default function TestingPage() {
     date_of_birth: string;
     time: string;
     gender: string;
-    state: string;
-    city: string;
+    location: string;
+    lat: number;
+    lon: number;
   }
 
   const [userData, setUserData] = useState<UserData | null>(null);
   const [error, setError] = useState("");
 
   const handleFetchUserData = async () => {
+    const email = localStorage.getItem("email");
+    const password = localStorage.getItem("password");
+
+    if (!email || !password) {
+      setError("Missing email or password from registration step");
+      return;
+    }
+
     const response = await fetch("http://127.0.0.1:5000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password: "dummyPassword" }), // Use a dummy password for testing
+      body: JSON.stringify({ email, password }),
     });
 
     if (response.ok) {
@@ -82,8 +91,9 @@ export default function TestingPage() {
               <p><strong>Date of Birth:</strong> {userData.date_of_birth}</p>
               <p><strong>Time:</strong> {userData.time}</p>
               <p><strong>Gender:</strong> {userData.gender}</p>
-              <p><strong>State:</strong> {userData.state}</p>
-              <p><strong>City:</strong> {userData.city}</p>
+              <p><strong>Location:</strong> {userData.location}</p>
+              <p><strong>Latitude:</strong> {userData.lat}</p>
+              <p><strong>Longitude:</strong> {userData.lon}</p>
             </div>
           )}
         </div>
