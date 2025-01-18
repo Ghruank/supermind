@@ -53,26 +53,35 @@ const data = [
   },
 ];
 
+const chartConfig = {
+  xAxis: {
+    dataKey: "name",
+    stroke: "currentColor",
+    fontSize: 12,
+    tickLine: false,
+    axisLine: false,
+    opacity: 0.5,
+    type: "category" as const,
+    interval: "preserveStartEnd" as const,
+  },
+  yAxis: {
+    stroke: "currentColor",
+    fontSize: 12,
+    tickLine: false,
+    axisLine: false,
+    opacity: 0.5,
+    width: 80,
+    tickFormatter: (value: number) => `$${value}`,
+    type: "number" as const,
+  },
+};
+
 export function Overview() {
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
-        <XAxis
-          dataKey="name"
-          stroke="currentColor"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-          opacity={0.5}
-        />
-        <YAxis
-          stroke="currentColor"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-          opacity={0.5}
-          tickFormatter={(value) => `$${value}`}
-        />
+      <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+        <XAxis {...chartConfig.xAxis} />
+        <YAxis {...chartConfig.yAxis} />
         <Bar
           dataKey="total"
           fill="currentColor"
