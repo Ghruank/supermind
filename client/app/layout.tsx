@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Analytics Pro',
-  description: 'Professional analytics dashboard',
+  title: 'SoulBuddy',
+  description: 'AI powered spritual guide',
 };
 
 export default function RootLayout({
