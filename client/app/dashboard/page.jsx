@@ -10,14 +10,42 @@ import {
   Calendar,
   Hash
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const horoscopes = [
+import { fetchBirthChart } from "@/app/getdata/birthchart";
+import { fetchHoroscope } from "@/app/getdata/horoscope";
+
+const horoscaopes = [
   { sign: "Aries", prediction: "A powerful day for new beginnings. Trust your instincts." },
-  { sign: "Taurus", prediction: "Financial opportunities arise. Stay grounded." },
-  { sign: "Gemini", prediction: "Communication flows easily. Express your ideas." }
+  // { sign: "Taurus", prediction: "Financial opportunities arise. Stay grounded." },
+  // { sign: "Gemini", prediction: "Communication flows easily. Express your ideas." }
 ];
 
 export default function DashboardPage() {
+
+  const [horoscopes, setHoroscopes] = useState([]);
+  const [chart, setChart] = useState("");
+
+  useEffect(() => {
+    // fetchBirthChart(
+    //   "John Doe",
+    //   1990,
+    //   1,
+    //   1,
+    //   12,
+    //   0,
+    //   -74.006,
+    //   40.7128,
+    //   "New York",
+    //   "USA",
+    //   "America/New_York",
+    //   "Tropic",
+    //   setChart
+    // );
+
+    // fetchHoroscope("libra", setHoroscopes);
+  }, []);
+
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
       <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-violet-400 via-purple-400 to-violet-400 bg-clip-text text-transparent mb-8">
@@ -98,6 +126,11 @@ export default function DashboardPage() {
           </div>
         </Card>
       </div>
+      
+      <div className="p-6 bg-gradient-to-br from-violet-950/50 via-purple-900/30 to-violet-950/50 border-violet-700/50 rounded-md"
+        dangerouslySetInnerHTML={{ __html: chart }}
+      ></div>
+
     </div>
   );
 }
