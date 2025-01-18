@@ -12,11 +12,35 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password === confirmPassword) {
-      router.push("/details");
+      const response = await fetch("http://127.0.0.1:5000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          // Add other required fields here
+          name: "John Doe",
+          date_of_birth: "1990-01-01",
+          time: "12:00",
+          gender: "Male",
+          state: "California",
+          city: "Los Angeles",
+        }),
+      });
+
+      if (response.ok) {
+        router.push("/details");
+      } else {
+        const result = await response.json();
+        setError(result.message || "Failed to register");
+      }
     }
   };
 
@@ -32,6 +56,8 @@ export default function RegisterPage() {
           </h2>
           <p className="mt-2 text-violet-300">Create your spiritual account</p>
         </div>
+
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">

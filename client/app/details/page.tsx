@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Moon, CalendarDays, MapPin } from "lucide-react";
+import { Moon } from "lucide-react";
 
 const states = ["Maharashtra", "Karnataka", "Tamil Nadu", "Uttar Pradesh"];
 const cities = {
@@ -31,10 +31,33 @@ export default function DetailsPage() {
     state: "",
     city: "",
   });
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/dashboard");
+    const response = await fetch("http://127.0.0.1:5000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        date_of_birth: formData.dob,
+        time: formData.time,
+        gender: formData.gender,
+        state: formData.state,
+        city: formData.city,
+        email: "john.doe@example.com",
+        password: "password123",
+      }),
+    });
+
+    if (response.ok) {
+      router.push("/testing");
+    } else {
+      const result = await response.json();
+      setError(result.message || "Failed to save details");
+    }
   };
 
   return (
@@ -49,6 +72,8 @@ export default function DetailsPage() {
           </h2>
           <p className="mt-2 text-violet-300">Tell us about yourself</p>
         </div>
+
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">

@@ -2,11 +2,13 @@ from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
+from flask_cors import CORS
 import uuid
 from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
+CORS(app)
 bcrypt = Bcrypt(app)
 
 # Load environment variables
@@ -60,6 +62,11 @@ def register():
         if not all(field in data for field in required_fields):
             return jsonify({'error': 'Missing required fields'}), 400
 
+        # Check if user already exists
+        existing_user = session.execute("SELECT * FROM users WHERE email=%s", (data['email'],)).one()
+        if existing_user:
+            return jsonify({'message': 'User already exists, please log in'}), 409
+
         # Hash password and insert user
         hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
         user_id = uuid.uuid4()
@@ -71,7 +78,7 @@ def register():
         return jsonify({'message': 'User registered successfully'}), 201
 
     except Exception as e:
-        return jsonify({'error': 'Failed to register user'}), 500
+        return jsonify({'error': 'Failed to register user', 'details': str(e)}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -102,7 +109,7 @@ def login():
             return jsonify({'message': 'Invalid email or password'}), 401
 
     except Exception as e:
-        return jsonify({'error': 'Failed to log in'}), 500
+        return jsonify({'error': 'Failed to log in', 'details': str(e)}), 500
 
 @app.route('/test', methods=['POST'])
 def test():
@@ -141,7 +148,7 @@ def test():
             return jsonify({'error': 'Failed to fetch user data'}), 500
 
     except Exception as e:
-        return jsonify({'error': 'Failed to process test data'}), 500
+        return jsonify({'error': 'Failed to process test data', 'details': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -11,11 +11,28 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add authentication logic here
-    router.push("/dashboard");
+    const response = await fetch("http://127.0.0.1:5000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+      router.push("/dashboard");
+    } else {
+      const result = await response.json();
+      if (result.message === "User does not exist") {
+        setError("User does not exist. Please register.");
+      } else {
+        setError(result.message || "Failed to log in");
+      }
+    }
   };
 
   return (
@@ -30,6 +47,8 @@ export default function LoginPage() {
           </h2>
           <p className="mt-2 text-violet-300">Continue your spiritual journey</p>
         </div>
+
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">
