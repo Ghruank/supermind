@@ -33,12 +33,8 @@ export default function DetailsPage() {
     lat: null,
     lon: null, // Longitude
   });
-  const [autocomplete, setAutocomplete] = useState(null);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const [autocomplete, setAutocomplete] =
+    useState(null);
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -56,30 +52,32 @@ export default function DetailsPage() {
       return;
     }
 
-    const response = await fetch("http://127.0.0.1:5000/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: formData.name,
-        date_of_birth: formData.dob || "2000-01-01", // Default date of birth
-        time: formData.time,
-        gender: formData.gender,
-        location: formData.location,
-        lat: formData.lat,
-        lon: formData.lon,
-        email,
-        password,
-      }),
-    });
+    localStorage.setItem("details", JSON.stringify(formData));
+    router.push("/dashboard");
+  //   const response = await fetch("https://supermind-h3vt.onrender.com/register", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       name: formData.name,
+  //       date_of_birth: formData.dob || "2000-01-01", // Default date of birth
+  //       time: formData.time,
+  //       gender: formData.gender,
+  //       location: formData.location,
+  //       lat: formData.lat,
+  //       lon: formData.lon,
+  //       email,
+  //       password,
+  //     }),
+  //   });
 
-    if (response.ok) {
-      router.push("/dashboard");
-    } else {
-      const result = await response.json();
-      setError(result.message || "Failed to save details");
-    }
+  //   if (response.ok) {
+  //     router.push("/dashboard");
+  //   } else {
+  //     const result = await response.json();
+  //     setError(result.message || "Failed to save details");
+  //   }
   };
 
   const onLoad = (autoC) => setAutocomplete(autoC);

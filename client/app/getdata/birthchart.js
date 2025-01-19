@@ -12,12 +12,14 @@ export const fetchBirthChart = async (
   timezone,
   setChart
 ) => {
+
+  console.log("Fetching birth chart", name, year, month, day, hour, minute, longitude, latitude, city, nation, timezone);
   const url = 'https://astrologer.p.rapidapi.com/api/v4/birth-chart';
  console.log(setChart);
   const options = {
     method: 'POST',
     headers: {
-      'x-rapidapi-key': "864984c6bdmsh7629e9b05df479fp11ebb7jsn60e266b657e5",
+      'x-rapidapi-key': "de676de8b1msh4fafc4fb6b66169p16ade2jsn19178c988b44",
       'x-rapidapi-host': 'astrologer.p.rapidapi.com',
       'Content-Type': 'application/json'
     },
