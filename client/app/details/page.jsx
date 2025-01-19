@@ -150,15 +150,7 @@ export default function DetailsPage() {
                 />
               </div>
             </div>
-            <div className=" bg-transparent">
-              <label className="text-white">
-                <input
-                  className="border-violet-400 dark:border-violet-500 bg-violet-200/50 dark:bg-violet-900/50 focus:ring-violet-400 checked:bg-violet-500 checked:border-violet-500 hover:scale-110 transition-all duration-500 ease-in-out w-6 h-6 mr-2"
-                  type="checkbox"
-                />
-                I don't know the time of birth
-              </label>
-            </div>
+         
 
             <Select
               value={formData.gender}
