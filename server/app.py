@@ -65,6 +65,10 @@ session.execute("""
 CREATE INDEX IF NOT EXISTS ON users (email);
 """)
 
+@app.route('/e', methods=['GET'])
+def hello_world():
+    return jsonify({'message': 'Hello, World!'})
+
 @app.route('/register', methods=['POST'])
 def register():
     try:
