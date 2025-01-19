@@ -71,7 +71,7 @@ export default function DetailsPage() {
     });
 
     if (response.ok) {
-      router.push("/testing");
+      router.push("/dashboard");
     } else {
       const result = await response.json();
       setError(result.message || "Failed to save details");

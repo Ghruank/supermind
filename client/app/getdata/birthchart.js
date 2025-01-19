@@ -10,7 +10,6 @@ export const fetchBirthChart = async (
   city,
   nation,
   timezone,
-  zodiac_type,
   setChart
 ) => {
   const url = 'https://astrologer.p.rapidapi.com/api/v4/birth-chart';
@@ -34,7 +33,7 @@ export const fetchBirthChart = async (
         city,
         nation,
         timezone,
-        zodiac_type
+        zodiac_type: "Tropic",
       },
       theme:'dark-high-contrast'
     })
