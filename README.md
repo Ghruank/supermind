@@ -50,49 +50,14 @@ SoulBuddy is an AI-driven platform designed to deliver personalized spiritual gu
 ---
 
 ## 📋 **Tech Stack**
-- **Frontend:** React.js with Tailwind CSS
-- **Backend:** Node.js / Flask
-- **AI:** Natural Language Processing and Machine Learning for personalized recommendations
-- **Database:** MongoDB for user data and horoscope records
+- **Frontend:** Next.js with Tailwind CSS
+- **Backend:** Flask
+- **AI:** Natural Language Processing and LLM Chatbots made through Langflow
+- **Database:** AstraDB by DataStax
 - **APIs:** Integration with astrological and numerological APIs
 - **Hosting:** Vercel for frontend and Render for backend
 
----
 
-## 🛠️ **How to Run Locally**
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-repo/soulbuddy.git
-   cd soulbuddy
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
-4. **Backend setup:**
-   Follow the backend setup instructions in the `/backend` folder.
-
----
-
-## ❤️ **Contributions**
-We welcome contributions to improve **SoulBuddy**!  
-Feel free to submit a pull request or open an issue.
-
----
-
-## 📧 **Contact**
-For any queries or support, reach out to us at:  
-**Email:** support@soulbuddy.ai
-
----
 
 ## 🌟 **Join the Journey of Self-Discovery!**
 
