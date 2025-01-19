@@ -12,6 +12,7 @@ import requests
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
+app.run(host="0.0.0.0", port=5000)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
