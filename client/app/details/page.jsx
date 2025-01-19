@@ -34,7 +34,7 @@ export default function DetailsPage() {
     lon: null ,  // Longitude
   });
   const [autocomplete, setAutocomplete] =
-    useState<google.maps.places.Autocomplete | null>(null);
+    useState(null);
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -82,7 +82,7 @@ export default function DetailsPage() {
   const onLoad = (autoC) => setAutocomplete(autoC);
 
   const onPlaceChanged = () => {
-    if (autocomplete) {
+    if (autocomplete && typeof google !== "undefined") {
       const place = autocomplete.getPlace();
       const location = place.formatted_address || place.name;
       const lat = place.geometry?.location?.lat();
