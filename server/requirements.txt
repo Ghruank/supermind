@@ -194,7 +194,7 @@ python-pptx==1.0.2
 python-socketio==5.11.3
 pyttsx3==2.98
 pytz==2024.1
-pywin32==306
+pywin32
 pywinpty==2.0.13
 PyYAML==6.0.2
 pyyaml_env_tag==0.1
