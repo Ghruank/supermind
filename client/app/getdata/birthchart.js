@@ -14,10 +14,11 @@ export const fetchBirthChart = async (
   setChart
 ) => {
   const url = 'https://astrologer.p.rapidapi.com/api/v4/birth-chart';
+  console.log(process.env.BIRTH_CHART_TOKEN);
   const options = {
     method: 'POST',
     headers: {
-      'x-rapidapi-key': '90c8df3111msh49fb0b7fa13c9f5p1a37d5jsn1d4b8a06fbc0',
+      'x-rapidapi-key': "864984c6bdmsh7629e9b05df479fp11ebb7jsn60e266b657e5",
       'x-rapidapi-host': 'astrologer.p.rapidapi.com',
       'Content-Type': 'application/json'
     },
