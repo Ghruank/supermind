@@ -13,7 +13,7 @@ export const fetchBirthChart = async (
   setChart
 ) => {
   const url = 'https://astrologer.p.rapidapi.com/api/v4/birth-chart';
-  console.log(process.env.BIRTH_CHART_TOKEN);
+ console.log(setChart);
   const options = {
     method: 'POST',
     headers: {

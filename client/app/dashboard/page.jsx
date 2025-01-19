@@ -1,14 +1,9 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
+
 import { 
-  Sun, 
-  Moon, 
-  Star,
-  Sparkles,
+
   MessageCircle,
-  Calendar,
-  Hash,
   User
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -22,59 +17,8 @@ export default function DashboardPage() {
 
  
   const [chart, setChart] = useState("");
-  const [userName, setUserName] = useState("");
-  const [dailyHoroscope, setDailyHoroscope] = useState("");
-  const [monthlyHoroscope, setMonthlyHoroscope] = useState("");
-  const [zodiacSign, setZodiacSign] = useState("");
-  const [date, setDate] = useState(new Date().toLocaleDateString());
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const email = localStorage.getItem("email");
-        const response = await fetch("http://127.0.0.1:5000/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password: localStorage.getItem("password") }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUserName(data.name);
-          const sign = getZodiacSign(data.date_of_birth);
-          setZodiacSign(sign);
-
-          // Fetch daily horoscope via Flask proxy
-          const dailyResponse = await fetch(`http://127.0.0.1:5000/proxy/horoscope?sign=${sign}&day=TODAY`, {
-            method: "GET",
-            headers: {
-              "accept": "application/json",
-            },
-          });
-          const dailyData = await dailyResponse.json();
-          setDailyHoroscope(dailyData.horoscope_data);
-
-          // Fetch monthly horoscope via Flask proxy
-          const monthlyResponse = await fetch(`http://127.0.0.1:5000/proxy/horoscope/monthly?sign=${sign}`, {
-            method: "GET",
-            headers: {
-              "accept": "application/json",
-            },
-          });
-          const monthlyData = await monthlyResponse.json();
-          setMonthlyHoroscope(monthlyData.horoscope_data);
-        } else {
-          setError("Failed to fetch user data");
-        }
-      } catch (err) {
-        setError("Network error. Please try again later.");
-      }
-    };
-
-    fetchUserData();
     fetchBirthChart(
       "John Doe",
       1990,
@@ -87,12 +31,12 @@ export default function DashboardPage() {
       "New York",
       "USA",
       "America/New_York",
-      "Tropic",
       setChart
     );
 
    
   }, []);
+
   return (
     <div className="flex items-center flex-col  space-y-4 p-8 pt-6 relative">
       {/* I have taken great care to refine and optimize each of these areas, ensuring that the project is not only functional and efficient but also innovative and user-centric. With this approach, my goal is to deliver a solution that not only meets industry standards but also pushes boundaries in terms of user experience, speed, and cutting-edge features.
