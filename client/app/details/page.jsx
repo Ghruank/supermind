@@ -82,7 +82,7 @@ export default function DetailsPage() {
   const onLoad = (autoC) => setAutocomplete(autoC);
 
   const onPlaceChanged = () => {
-    if (autocomplete && typeof google !== "undefined") {
+    if (autocomplete && typeof window !== "undefined" && typeof google !== "undefined") {
       const place = autocomplete.getPlace();
       const location = place.formatted_address || place.name;
       const lat = place.geometry?.location?.lat();
