@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,11 +30,15 @@ export default function DetailsPage() {
     location: "",
     state: "",
     city: "",
-    lat: null ,
-    lon: null ,  // Longitude
+    lat: null,
+    lon: null, // Longitude
   });
-  const [autocomplete, setAutocomplete] =
-    useState(null);
+  const [autocomplete, setAutocomplete] = useState(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -53,7 +57,6 @@ export default function DetailsPage() {
     }
 
     const response = await fetch("http://127.0.0.1:5000/register", {
-
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +85,7 @@ export default function DetailsPage() {
   const onLoad = (autoC) => setAutocomplete(autoC);
 
   const onPlaceChanged = () => {
-    if (autocomplete && typeof window !== "undefined" && typeof google !== "undefined") {
+    if (autocomplete && typeof google !== "undefined") {
       const place = autocomplete.getPlace();
       const location = place.formatted_address || place.name;
       const lat = place.geometry?.location?.lat();
@@ -97,7 +100,7 @@ export default function DetailsPage() {
     }
   };
 
-  if (!isLoaded) return <div>Loading...</div>;
+  if (!isLoaded || !isClient) return <div>Loading...</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-950 via-purple-900 to-indigo-950 flex items-center justify-center">
