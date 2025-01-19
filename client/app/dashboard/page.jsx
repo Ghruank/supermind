@@ -1,8 +1,6 @@
 "use client";
 
-
 import { 
-
   MessageCircle,
   User
 } from "lucide-react";
@@ -11,30 +9,35 @@ import { useEffect, useState } from "react";
 import { fetchBirthChart } from "@/app/getdata/birthchart";
 import Link from "next/link";
 
-
-
 export default function DashboardPage() {
-
- 
   const [chart, setChart] = useState("");
 
   useEffect(() => {
-    fetchBirthChart(
-      "John Doe",
-      1990,
-      1,
-      1,
-      12,
-      0,
-      -74.006,
-      40.7128,
-      "New York",
-      "USA",
-      "America/New_York",
-      setChart
-    );
-
-   
+    const storedDetails = localStorage.getItem("details");
+    if (storedDetails) {
+      const details = JSON.parse(storedDetails);
+      const [year, month, day] = details.dob.split("-");
+      const [hour, minute] = details.time.split(":");
+      const locaArr = details.location.split(", ");
+      const city = locaArr[0];
+      const country = locaArr[locaArr.length - 1];
+      
+      console.log(details);
+      fetchBirthChart(
+        details.name,
+        parseInt(year),
+        parseInt(month),
+        parseInt(day),
+        parseInt(hour),
+        parseInt(minute),
+        parseInt(details.lon),
+        parseInt(details.lat),
+        city,
+        country,
+        "UTC",
+        setChart
+      );
+    }
   }, []);
 
   return (

@@ -15,24 +15,32 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch("https://supermind-h3vt.onrender.com/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    const email = localStorage.getItem("email");
+    const password = localStorage.getItem("password");
 
-    if (response.ok) {
+    if (email === email && password === password) {
       router.push("/dashboard");
     } else {
-      const result = await response.json();
-      if (result.message === "User does not exist") {
-        setError("User does not exist. Please register.");
-      } else {
-        setError(result.message || "Failed to log in");
-      }
+      setError("User does not exist. Please register.");
     }
+    // const response = await fetch("https://supermind-h3vt.onrender.com/login", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ email, password }),
+    // });
+
+    // if (response.ok) {
+    //   router.push("/dashboard");
+    // } else {
+    //   const result = await response.json();
+    //   if (result.message === "User does not exist") {
+    //     setError("User does not exist. Please register.");
+    //   } else {
+    //     setError(result.message || "Failed to log in");
+    //   }
+    // }
   };
 
   return (
