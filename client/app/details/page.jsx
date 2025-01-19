@@ -41,6 +41,7 @@ export default function DetailsPage() {
     libraries,
   });
   const [error, setError] = useState("");
+  const isClient = typeof window !== "undefined";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
