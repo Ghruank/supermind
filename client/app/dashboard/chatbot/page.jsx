@@ -9,8 +9,6 @@ import { Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Markdown from "markdown-to-jsx";
 
-
-
 export default function ChatbotPage() {
   const [messages, setMessages] = useState([
     {
@@ -19,7 +17,21 @@ export default function ChatbotPage() {
     },
   ]);
   const [input, setInput] = useState("");
+  const [botOption, setBotOption] = useState("Spiritual Advice"); // Default option
   const [isLoading, setIsLoading] = useState(false);
+
+  // Static UserData
+  const userData = {
+    name: "Prathamesh Sankhe",
+    dob: "2005-06-16",
+    time: "07:40",
+    gender: "Male",
+    location: "Colaba",
+    state: "Maharashtra",
+    city: "Mumbai",
+    lat: "18.9067",
+    lon: "72.8147",
+  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -46,9 +58,8 @@ export default function ChatbotPage() {
             output_type: "chat",
             input_type: "chat",
             tweaks: {
-              "ChatInput-PVzFe": {},
-              "ChatOutput-lvbPv": {},
-              "GroqModel-vyoVc": {},
+              "TextInput-HJvbF": { value: userData }, // Pass UserData
+              "TextInput-NulT7": { value: botOption }, // Pass selected BotOption
             },
           }),
         }
@@ -60,7 +71,7 @@ export default function ChatbotPage() {
       if (data?.outputs) {
         const assistantMessage = {
           role: "assistant",
-          content: data.outputs[0].outputs[0].artifacts.message, // Adjust this if the API's response format differs
+          content: data.outputs[0].outputs[0].artifacts.message, // Adjust based on API response
         };
         setMessages((prev) => [...prev, assistantMessage]);
       } else {
@@ -99,13 +110,32 @@ export default function ChatbotPage() {
                     : "bg-muted"
                 )}
               >
-              <Markdown>{message.content}</Markdown>
+                <Markdown>{message.content}</Markdown>
               </div>
             ))}
           </div>
         </ScrollArea>
 
         <div className="p-4 border-t border-primary/10">
+          {/* Dropdown for selecting BotOption */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-muted-foreground mb-2">
+              Select a Bot Option:
+            </label>
+            <select
+              value={botOption}
+              onChange={(e) => setBotOption(e.target.value)}
+              className="w-full border rounded-md p-2 text-muted-foreground bg-background focus:outline-none focus:ring focus:ring-primary"
+            >
+              <option value="Spiritual Advice">Spiritual Advice</option>
+              <option value="Pooja Recommendations">Pooja Recommendations</option>
+              <option value="Meditation and Exercise Recommendations">
+                Meditation and Exercise Recommendations
+              </option>
+              <option value="Insights on Life">Insights on Life</option>
+            </select>
+          </div>
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
