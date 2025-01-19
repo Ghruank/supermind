@@ -7,6 +7,7 @@ import uuid
 from dotenv import load_dotenv
 import os
 import logging
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -172,5 +173,12 @@ def test():
         logging.error(f"Error during test: {e}")
         return jsonify({'error': 'Failed to process test data', 'details': str(e)}), 500
 
+@app.route('/proxy/horoscope', methods=['GET'])
+def proxy_horoscope():
+    sign = request.args.get('sign')
+    day = request.args.get('day')
+    url = f"https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign={sign}&day={day}"
+    response = requests.get(url)
+    return jsonify(response.json())
 if __name__ == '__main__':
     app.run(debug=True)
