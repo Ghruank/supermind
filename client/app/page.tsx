@@ -19,7 +19,7 @@ export default function Home() {
           <div className="flex items-center space-x-2">
             <Moon className="h-8 w-8 text-violet-300" />
             <span className="text-2xl font-bold bg-gradient-to-r from-violet-200 via-purple-300 to-violet-200 bg-clip-text text-transparent">
-              Celestial Guide
+              Soul Buddy
             </span>
           </div>
           <div className="space-x-4">
@@ -46,7 +46,7 @@ export default function Home() {
           
           <h1 className="text-6xl font-bold tracking-tight">
             <span className="bg-gradient-to-r from-violet-200 via-purple-300 to-violet-200 bg-clip-text text-transparent">
-              Unlock Cosmic Wisdom
+              Aligning Stars, Guiding Souls.
             </span>
           </h1>
           
