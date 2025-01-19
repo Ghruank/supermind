@@ -57,7 +57,7 @@ https://youtu.be/gfBN_XfmbaQ?feature=shared
 - **APIs:** Integration with astrological and numerological APIs
 - **Hosting:** Vercel for frontend and Render for backend
 
-## **Langflow Workflow**
+## **Spiritual Advisor and Astrologer Chatbot- Langflow Workflow**
 ![image](https://github.com/user-attachments/assets/97aa3acc-f7b2-4086-8106-47a01f27393a)
 
 
