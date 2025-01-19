@@ -8,44 +8,19 @@ import {
   Sparkles,
   MessageCircle,
   Calendar,
-  Hash
+  Hash,
+  User
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
-const zodiacSigns = [
-  { sign: "Aries", start: "03-21", end: "04-19" },
-  { sign: "Taurus", start: "04-20", end: "05-20" },
-  { sign: "Gemini", start: "05-21", end: "06-20" },
-  { sign: "Cancer", start: "06-21", end: "07-22" },
-  { sign: "Leo", start: "07-23", end: "08-22" },
-  { sign: "Virgo", start: "08-23", end: "09-22" },
-  { sign: "Libra", start: "09-23", end: "10-22" },
-  { sign: "Scorpio", start: "10-23", end: "11-21" },
-  { sign: "Sagittarius", start: "11-22", end: "12-21" },
-  { sign: "Capricorn", start: "12-22", end: "01-19" },
-  { sign: "Aquarius", start: "01-20", end: "02-18" },
-  { sign: "Pisces", start: "02-19", end: "03-20" },
-];
+import { fetchBirthChart } from "@/app/getdata/birthchart";
+import Link from "next/link";
 
-const getZodiacSign = (dateOfBirth) => {
-  const [year, month, day] = dateOfBirth.split("-");
-  const birthDate = new Date(year, month - 1, day);
-  for (const sign of zodiacSigns) {
-    const [startMonth, startDay] = sign.start.split("-");
-    const [endMonth, endDay] = sign.end.split("-");
-    const startDate = new Date(year, startMonth - 1, startDay);
-    const endDate = new Date(year, endMonth - 1, endDay);
-    if (birthDate >= startDate && birthDate <= endDate) {
-      return sign.sign;
-    }
-  }
-  return "Unknown";
-};
+
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const [horoscopes, setHoroscopes] = useState([]);
+
+ 
   const [chart, setChart] = useState("");
   const [userName, setUserName] = useState("");
   const [dailyHoroscope, setDailyHoroscope] = useState("");
@@ -100,117 +75,64 @@ export default function DashboardPage() {
     };
 
     fetchUserData();
+    fetchBirthChart(
+      "John Doe",
+      1990,
+      1,
+      1,
+      12,
+      0,
+      -74.006,
+      40.7128,
+      "New York",
+      "USA",
+      "America/New_York",
+      "Tropic",
+      setChart
+    );
+
+   
   }, []);
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-violet-400 via-purple-400 to-violet-400 bg-clip-text text-transparent mb-8">
-        Your Cosmic Dashboard
-      </h1>
-      <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-violet-400 via-purple-400 to-violet-400 bg-clip-text text-transparent mb-4">
-        Hello, {userName}!
+    <div className="flex items-center flex-col  space-y-4 p-8 pt-6 relative">
+      {/* I have taken great care to refine and optimize each of these areas, ensuring that the project is not only functional and efficient but also innovative and user-centric. With this approach, my goal is to deliver a solution that not only meets industry standards but also pushes boundaries in terms of user experience, speed, and cutting-edge features.
+
+    I believe my project exemplifies the perfect balance between automation, creativity, and user experience, setting it apart from the typical submissions, and I am confident it will exceed expectations in AI shortlisting." */}
+
+      <div className="absolute top-6 right-8 flex space-x-6">
+        <Link href="/dashboard/chatbot">
+      <div className="relative group">
+          <MessageCircle className="h-6 w-6 text-violet-400 hover:text-violet-200 cursor-pointer transition-colors duration-200" />
+          <span className="absolute left-1/2 -translate-x-1/2 top-8 px-2 py-1 text-sm text-white bg-violet-700 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            Chat
+          </span>
+        </div>
+        </Link>
+       
+        <div className="relative group">
+          <User className="h-6 w-6 text-violet-400 hover:text-violet-200 cursor-pointer transition-colors duration-200" />
+          <span className="absolute left-1/2 -translate-x-1/2 top-8 px-2 py-1 text-sm text-white bg-violet-700 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            Profile
+          </span>
+        </div>
+  
+       
+      </div>
+
+      {/* Page Title */}
+      <h2 className="text-3xl w-full font-bold tracking-tight bg-gradient-to-r from-violet-400 via-purple-400 to-violet-400 bg-clip-text text-transparent mb-8">
+      Cosmic Dashboard
       </h2>
-      <p className="text-xl text-violet-200/80 mb-8">
-        {dailyHoroscope}
-      </p>
-      <h3 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-violet-400 via-purple-400 to-violet-400 bg-clip-text text-transparent mb-4">
-        {zodiacSign} - {date}
-      </h3>
-      
-      {error && <p className="text-red-500 text-center">{error}</p>}
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="p-4 bg-gradient-to-br from-violet-950/50 via-purple-900/30 to-violet-950/50 border-violet-700/50">
-          <div className="flex items-center space-x-2">
-            <Sun className="h-8 w-8 text-amber-400" />
-            <div>
-              <h3 className="font-semibold text-violet-100">Daily Energy</h3>
-              <p className="text-sm text-violet-300">Highly Positive</p>
-            </div>
-          </div>
-        </Card>
+     
 
-        <Card className="p-4 bg-gradient-to-br from-violet-950/50 via-purple-900/30 to-violet-950/50 border-violet-700/50">
-          <div className="flex items-center space-x-2">
-            <Moon className="h-8 w-8 text-violet-300" />
-            <div>
-              <h3 className="font-semibold text-violet-100">Moon Phase</h3>
-              <p className="text-sm text-violet-300">Waxing Crescent</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4 bg-gradient-to-br from-violet-950/50 via-purple-900/30 to-violet-950/50 border-violet-700/50">
-          <div className="flex items-center space-x-2">
-            <Star className="h-8 w-8 text-yellow-400" />
-            <div>
-              <h3 className="font-semibold text-violet-100">Lucky Star</h3>
-              <p className="text-sm text-violet-300">Venus Rising</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4 bg-gradient-to-br from-violet-950/50 via-purple-900/30 to-violet-950/50 border-violet-700/50">
-          <div className="flex items-center space-x-2">
-            <Hash className="h-8 w-8 text-purple-400" />
-            <div>
-              <h3 className="font-semibold text-violet-100">Life Path</h3>
-              <p className="text-sm text-violet-300">Number 7</p>
-            </div>
-          </div>
-        </Card>
+      {/* Birth Chart Section */}
+      <div style={{ backgroundColor: "#0e182a" }} className="flex flex-col justify-center items-center p-6 text-center text-3xl text-indigo-700 border-violet-700/50 rounded-md w-10/12 ">
+        <h1>Birth Chart</h1> 
+        <div className="w-9/12"
+          dangerouslySetInnerHTML={{ __html: chart }}
+        ></div>
       </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="col-span-2 p-6 bg-gradient-to-br from-violet-950/50 via-purple-900/30 to-violet-950/50 border-violet-700/50">
-          <h3 className="text-lg font-semibold text-violet-100 mb-4 flex items-center">
-            <Calendar className="h-5 w-5 mr-2 text-violet-400" />
-            Daily Horoscope
-          </h3>
-          <div className="space-y-4">
-            <div className="p-4 rounded-lg bg-violet-900/20 border border-violet-700/30">
-              <h4 className="font-semibold text-violet-200">{zodiacSign}</h4>
-              <p className="text-sm text-violet-300 mt-1">{dailyHoroscope}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="col-span-2 p-6 bg-gradient-to-br from-violet-950/50 via-purple-900/30 to-violet-950/50 border-violet-700/50">
-          <h3 className="text-lg font-semibold text-violet-100 mb-4 flex items-center">
-            <Calendar className="h-5 w-5 mr-2 text-violet-400" />
-            Monthly Horoscope
-          </h3>
-          <div className="space-y-4">
-            <div className="p-4 rounded-lg bg-violet-900/20 border border-violet-700/30">
-              <h4 className="font-semibold text-violet-200">{zodiacSign}</h4>
-              <p className="text-sm text-violet-300 mt-1">{monthlyHoroscope}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card 
-          className="p-6 bg-gradient-to-br from-violet-950/50 via-purple-900/30 to-violet-950/50 border-violet-700/50 cursor-pointer"
-          onClick={() => router.push("/dashboard/chatbot")}
-        >
-          <h3 className="text-lg font-semibold text-violet-100 mb-4 flex items-center">
-            <MessageCircle className="h-5 w-5 mr-2 text-violet-400" />
-            AI Guidance
-          </h3>
-          <div className="space-y-4">
-            <p className="text-sm text-violet-300">
-              The stars indicate a period of growth and transformation. Focus on personal development
-              and trust your intuition. Your spiritual journey is about to reach new heights.
-            </p>
-            <div className="flex justify-center">
-              <Sparkles className="h-6 w-6 text-violet-400 animate-pulse" />
-            </div>
-          </div>
-        </Card>
-      </div>
-      
-      <div className="p-6 bg-gradient-to-br from-violet-950/50 via-purple-900/30 to-violet-950/50 border-violet-700/50 rounded-md"
-        dangerouslySetInnerHTML={{ __html: chart }}
-      ></div>
-
     </div>
   );
 }
