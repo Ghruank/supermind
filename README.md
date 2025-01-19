@@ -39,13 +39,13 @@ SoulBuddy is an AI-driven platform designed to deliver personalized spiritual gu
 
 ## 🌐 **Live Demo**
 [🌟 Visit the Website](#)  
-(Insert the link to your platform)
+https://supermind-grll.vercel.app/
 
 ---
 
 ## 🎥 **Video Demo**
 [🎥 Watch on YouTube](#)  
-(Insert the link to your demo video)
+https://youtu.be/gfBN_XfmbaQ?feature=shared
 
 ---
 
@@ -57,6 +57,8 @@ SoulBuddy is an AI-driven platform designed to deliver personalized spiritual gu
 - **APIs:** Integration with astrological and numerological APIs
 - **Hosting:** Vercel for frontend and Render for backend
 
+## **Langflow Workflow**
+![image](https://github.com/user-attachments/assets/97aa3acc-f7b2-4086-8106-47a01f27393a)
 
 
 ## 🌟 **Join the Journey of Self-Discovery!**
